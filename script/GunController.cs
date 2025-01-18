@@ -33,11 +33,11 @@ public class GunController : UdonSharpBehaviour
             PlayHaptics(); //コントローラを振動させる
             currentAmmo--; // 残弾を減らす
             UpdateAmmoUI(); // 弾数表示を更新
+            //TODO発砲音を追加
         }
         else
         {
-            Debug.Log("弾切れ");
-            // TODO: リロード処理を後で追加
+            //TODO弾切れ時のサウンドを追加
         }
     }
 
@@ -60,8 +60,28 @@ public class GunController : UdonSharpBehaviour
         float duration = 1.0f;
         float amplitude = 1.0f;
         float frequency = 1.0f;
-        Networking.LocalPlayer.PlayHapticEventInHand(VRC_Pickup.PickupHand.Left, duration, amplitude, frequency);
+        //Networking.LocalPlayer.PlayHapticEventInHand(VRC_Pickup.PickupHand.Left, duration, amplitude, frequency);
         Networking.LocalPlayer.PlayHapticEventInHand(VRC_Pickup.PickupHand.Right, duration, amplitude, frequency);
     }
+
+    public void Reload()
+    {
+        PlayHaptics();
+        currentAmmo = maxAmmo;
+        UpdateAmmoUI();
+        //TODOリロード音を追加
+    }
+
+    //精度がよくないためmagazine側にもスクリプトを用意して銃と衝突時にGunControllerがあればReload()を呼び出すことにする．
+    /*
+    private void OnTriggerEnter(Collider other)
+    {
+        // 接触したオブジェクトの名前が"Magazine"であるか確認
+        if (other.gameObject.name == "Magazine")
+        {
+            Reload(); // Reloadメソッドを呼び出す
+            Destroy(other.gameObject); // magazineオブジェクトを削除
+        }
+    }*/
 
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: MagEquip
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: f7b1b62bb7ae97d4d9b92ab036615491,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 33ec75be5507dab4ea59e3fd0a53da38,
     type: 2}
   udonAssembly: 
   assemblyError: 

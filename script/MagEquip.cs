@@ -15,20 +15,20 @@ public class MagEquip : UdonSharpBehaviour
     
     void Update()
     {
-        if(!Utilities.IsValid(Networking.LocalPlayer))
-        { 
-            return; //エラー回避
-        }   
-        if(IsEquiped == false) 
+           
+        if(!IsEquiped) 
         { 
             return; 
         }
- 
-        MagagineBelt.position = Networking.LocalPlayer.GetBonePosition(HumanBodyBones.Chest);
-        Vector3 XVector = Networking.LocalPlayer.GetBonePosition(HumanBodyBones.RightShoulder) - Networking.LocalPlayer.GetBonePosition(HumanBodyBones.LeftShoulder);
-        Vector3 YVector = Networking.LocalPlayer.GetBonePosition(HumanBodyBones.Neck) - Networking.LocalPlayer.GetBonePosition(HumanBodyBones.Hips);
-        Vector3 ZVector = Vector3.Cross(XVector, YVector);
-        MagagineBelt.transform.rotation = Quaternion.LookRotation(ZVector, YVector);
+        if(!Utilities.IsValid(Networking.LocalPlayer))
+        { 
+            return; //エラー回避
+        }
+
+        //ベルトの位置と向きをプレイヤーのHipsに合わせる
+        MagagineBelt.transform.position = Networking.LocalPlayer.GetBonePosition(HumanBodyBones.Hips);
+        MagagineBelt.transform.rotation = Networking.LocalPlayer.GetBoneRotation(HumanBodyBones.Hips);
+       
     }
 }
 

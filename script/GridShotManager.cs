@@ -16,16 +16,18 @@ public class GridShotManager : UdonSharpBehaviour
     [Header("UI Elements")]
     [SerializeField] Text ScoreText;
     [SerializeField] Text TimeText;
-
+    [SerializeField] Text BestScoreText;
     private int score = 0;
+    private int bestScore = 0;
     private float timer = 10f;
     private bool isGameActive = false;
 
 
     private void Start()
     {  
-        ScoreText.text = score.ToString();
-        TimeText.text = timer.ToString();
+        ScoreText.text = $"Score: {score.ToString()}"; //canvasに表示
+        TimeText.text = $"Time: {timer.ToString()}";
+        BestScoreText.text = $"BestScore: {bestScore.ToString()}";
     }
 
     private void Update()
@@ -34,10 +36,15 @@ public class GridShotManager : UdonSharpBehaviour
         {
             timer -= Time.deltaTime;
             //Debug.Log("時間経過");
-            TimeText.text = timer.ToString();
+            TimeText.text = $"Time: {timer.ToString()}";
 
             if (timer <= 0)
             {
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    BestScoreText.text = $"BestScore: {bestScore.ToString()}";
+                }   
                 EndGame();
             }
         }
@@ -47,7 +54,7 @@ public class GridShotManager : UdonSharpBehaviour
     {
         score++;
         Debug.Log($"現在のスコア: {score}");
-        ScoreText.text = score.ToString();
+        ScoreText.text = $"Score: {score.ToString()}";
     }
 
     public void StartGame()
@@ -71,9 +78,20 @@ public class GridShotManager : UdonSharpBehaviour
     {
         isGameActive = false;
         timer = 10f;
+        score = 0;
         Debug.Log("終了");
-        TimeText.text = timer.ToString();
+        TimeText.text = $"Time: {timer.ToString()}";
+        ScoreText.text = $"Score: {score.ToString()}";
         // TODO: ゲーム終了処理
+    }
+
+    public void ResetGame()
+    {
+        isGameActive = false;
+        timer = 10f;
+        score = 0;
+        TimeText.text = $"Time: {timer.ToString()}";
+        ScoreText.text = $"Score: {score.ToString()}";
     }
 
   

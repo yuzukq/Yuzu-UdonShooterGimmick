@@ -2,7 +2,8 @@
 using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
-using TMPro;
+using UnityEngine.UI;
+
 public class GunController : UdonSharpBehaviour
 {
     ParticleSystem particleSystem; //弾丸のパーティクル
@@ -13,7 +14,7 @@ public class GunController : UdonSharpBehaviour
     
 
     [Header("Gun UI")]
-    [SerializeField] private TextMeshProUGUI ammoText; //現在の弾数表示用
+    [SerializeField] private Text ammoText; //現在の弾数表示用
     
 
     
@@ -40,7 +41,7 @@ public class GunController : UdonSharpBehaviour
 
     private void UpdateAmmoUI()
     {
-        ammoText.text = $"Ammo: {currentAmmo}/{maxAmmo}";
+        ammoText.text = $"{currentAmmo}/{maxAmmo}";
     }
 
     public void OnParticleCollision(GameObject other)   //被弾判定が発生した

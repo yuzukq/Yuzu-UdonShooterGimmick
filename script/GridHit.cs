@@ -1,5 +1,4 @@
-﻿
-using UdonSharp;
+﻿using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
@@ -10,12 +9,12 @@ public class GridHit : UdonSharpBehaviour
     Animator animator;
     AudioSource audioSource;
 
-    private GridShotManager gameManage = default;
+    private GridShotManager gameManage = default; // ゲーム管理のクラス
     
-    private void Start()    //初期化
+    private void Start()    
     {
         //trasform.parent: 親オブジェクト
-        gameManage = transform.parent.GetComponent<GridShotManager>();
+        gameManage = transform.parent.GetComponent<GridShotManager>(); // ゲーム管理のクラスを取得
 
         particleSystem = GetComponent<ParticleSystem>();
         animator = GetComponent<Animator>();
@@ -24,6 +23,7 @@ public class GridHit : UdonSharpBehaviour
         //以下デバッグ用
         //gameManage.AddScore();
         //gameManage.SpawnTarget();
+        Hit();
     }
     
     public void Hit()   //被弾エフェクトと効果音を出す
@@ -31,10 +31,13 @@ public class GridHit : UdonSharpBehaviour
         GetComponent<ParticleSystem>().Play();
         animator.SetTrigger("Hit");
         audioSource.PlayOneShot(audioSource.clip);
+    
+        gameManage.StartGame(); // ゲームを開始
+        
+        gameManage.AddScore(); // スコアを加算
+        gameManage.SwapTarget(); // ターゲットを移動
 
-        gameManage.AddScore();
-        gameManage.SpawnTarget();
-
+        
     }
     
 }

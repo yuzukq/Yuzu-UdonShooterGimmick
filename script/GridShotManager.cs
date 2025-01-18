@@ -18,7 +18,7 @@ public class GridShotManager : UdonSharpBehaviour
     [SerializeField] Text TimeText;
 
     private int score = 0;
-    private float timer = 30f;
+    private float timer = 10f;
     private bool isGameActive = false;
 
 
@@ -30,7 +30,7 @@ public class GridShotManager : UdonSharpBehaviour
 
     private void Update()
     {
-        if (isGameActive)
+        if (isGameActive == true)
         {
             timer -= Time.deltaTime;
             //Debug.Log("時間経過");
@@ -52,25 +52,27 @@ public class GridShotManager : UdonSharpBehaviour
 
     public void StartGame()
     {
-        isGameActive = true;
-        SpawnTarget(); // 初期的を生成
+        if(isGameActive == false)   //もしゲームが開始されていなかったら．
+        {
+            isGameActive = true;
+            Debug.Log("ゲーム開始");
+        }
     }
 
-
-    public void SpawnTarget()
+    public void SwapTarget()
     {
         // ランダムな場所を選択
         int randomIndex = Random.Range(0, spawnPlaces.Length);
-        Transform spawnPoint = spawnPlaces[randomIndex];
-
-        // 的を生成
-        Instantiate(gridShotTarget, spawnPoint.position, Quaternion.identity);
-    }
+        // ターゲットを移動
+        gridShotTarget.transform.position = spawnPlaces[randomIndex].position;
+    }   
 
     private void EndGame()
     {
         isGameActive = false;
+        timer = 10f;
         Debug.Log("終了");
+        TimeText.text = timer.ToString();
         // TODO: ゲーム終了処理
     }
 

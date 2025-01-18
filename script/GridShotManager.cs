@@ -35,7 +35,6 @@ public class GridShotManager : UdonSharpBehaviour
         if (isGameActive == true)
         {
             timer -= Time.deltaTime;
-            //Debug.Log("時間経過");
             TimeText.text = $"Time: {timer.ToString()}";
 
             if (timer <= 0)

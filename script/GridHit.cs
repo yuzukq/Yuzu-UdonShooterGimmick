@@ -23,7 +23,7 @@ public class GridHit : UdonSharpBehaviour
         //以下デバッグ用
         //gameManage.AddScore();
         //gameManage.SpawnTarget();
-        Hit();
+        //Hit();
     }
     
     public void Hit()   //被弾エフェクトと効果音を出す

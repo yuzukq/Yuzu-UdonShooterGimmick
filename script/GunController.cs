@@ -16,6 +16,11 @@ public class GunController : UdonSharpBehaviour
     [Header("Gun UI")]
     [SerializeField] private Text ammoText; //現在の弾数表示用
     
+    [Header("Gun Sound")]
+    [SerializeField] private AudioSource fireSound; // 発砲音
+    [SerializeField] private AudioSource emptyFireSound; // 弾切れ時の音
+    [SerializeField] private AudioSource reloadSound; // リロード音
+    
 
     
 
@@ -33,11 +38,11 @@ public class GunController : UdonSharpBehaviour
             PlayHaptics(); //コントローラを振動させる
             currentAmmo--; // 残弾を減らす
             UpdateAmmoUI(); // 弾数表示を更新
-            //TODO発砲音を追加
+            fireSound.Play(); // 発砲音を再生
         }
         else
         {
-            //TODO弾切れ時のサウンドを追加
+            emptyFireSound.Play(); // 弾切れ時の音を再生
         }
     }
 
@@ -69,7 +74,7 @@ public class GunController : UdonSharpBehaviour
         PlayHaptics();
         currentAmmo = maxAmmo;
         UpdateAmmoUI();
-        //TODOリロード音を追加
+        reloadSound.Play(); // リロード音を再生
     }
 
     //精度がよくないためmagazine側にもスクリプトを用意して銃と衝突時にGunControllerがあればReload()を呼び出すことにする．

@@ -5,9 +5,12 @@ using VRC.Udon;
 
 public class Magazine : UdonSharpBehaviour
 {
+    [Header("Magazine")]
     [SerializeField] GameObject magazine;
     [SerializeField] float destroyTime = 10.0f;
     [SerializeField] float spawnSideOffset = -0.2f;
+
+    
 
     
     public override void Interact()
@@ -15,6 +18,7 @@ public class Magazine : UdonSharpBehaviour
         if (magazine == null) { return; } //エラー回避 magazineがnullであればreturn
 
         GameObject newObject = Object.Instantiate(magazine);
+        
         
         // 生成位置の設定
         newObject.transform.position = this.transform.position + new Vector3(spawnSideOffset, 0, 0); // x軸方向に-0.2fずらす

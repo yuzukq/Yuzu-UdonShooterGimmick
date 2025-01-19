@@ -15,23 +15,43 @@ public class GridShotManager : UdonSharpBehaviour
 
     [Header("UI Elements")]
     [SerializeField] Text ScoreText;
+    [SerializeField] Text ClearScoreText;
     [SerializeField] Text TimeText;
     [SerializeField] Text BestScoreText;
-    private int score = 0;
-    private int bestScore = 0;
-    private float timer = 10f;
-    private bool isGameActive = false;
+    [SerializeField] Transform ClearHUD;
 
+    [Header("Game Settings")]
+    [SerializeField] float playTime = 10f;
+
+    private int score = 0;
+    private int erlierScore = 0;
+    private int bestScore = 0;
+    private float timer;
+    private bool isGameActive = false;
+    private bool isHUDActive = false;
 
     private void Start()
     {  
+        timer = playTime;
         ScoreText.text = $"Score: {score.ToString()}"; //canvasに表示
         TimeText.text = $"Time: {timer.ToString()}";
         BestScoreText.text = $"BestScore: {bestScore.ToString()}";
+        ClearHUD.localScale = Vector3.zero;//HUDをスケール0で非表示
+
+        //以下デバッグ用
+        //EndGame();
     }
 
     private void Update()
     {
+
+        if(!Utilities.IsValid(Networking.LocalPlayer)){return;}
+
+        //HUDの位置を常にプレイヤーの頭の位置に合わせる
+        Vector3 position = Networking.LocalPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).position;
+        Quaternion rotation = Networking.LocalPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).rotation;
+        ClearHUD.SetPositionAndRotation(position, rotation);
+
         if (isGameActive == true)
         {
             timer -= Time.deltaTime;
@@ -47,12 +67,12 @@ public class GridShotManager : UdonSharpBehaviour
                 EndGame();
             }
         }
+
     }
 
     public void AddScore()
     {
         score++;
-        Debug.Log($"現在のスコア: {score}");
         ScoreText.text = $"Score: {score.ToString()}";
     }
 
@@ -61,14 +81,20 @@ public class GridShotManager : UdonSharpBehaviour
         if(isGameActive == false)   //もしゲームが開始されていなかったら．
         {
             isGameActive = true;
-            Debug.Log("ゲーム開始");
         }
     }
 
     public void SwapTarget()
     {
-        // ランダムな場所を選択
-        int randomIndex = Random.Range(0, spawnPlaces.Length);
+        // 現在の位置を取得
+        Vector3 currentPosition = gridShotTarget.transform.position;
+        int randomIndex;
+
+        // 現在の位置と異なるランダムな場所を選択
+        do{
+            randomIndex = Random.Range(0, spawnPlaces.Length);
+        } while (spawnPlaces[randomIndex].position == currentPosition);
+
         // ターゲットを移動
         gridShotTarget.transform.position = spawnPlaces[randomIndex].position;
     }   
@@ -76,18 +102,37 @@ public class GridShotManager : UdonSharpBehaviour
     private void EndGame()
     {
         isGameActive = false;
-        timer = 10f;
+        timer = playTime;
+        erlierScore = score;
         score = 0;
-        Debug.Log("終了");
         TimeText.text = $"Time: {timer.ToString()}";
         ScoreText.text = $"Score: {score.ToString()}";
-        // TODO: ゲーム終了処理
+        ClearScoreText.text = $"Score: {erlierScore.ToString()}";
+        
+        isHUDActive = true;
+        ClearHUD.localScale = Vector3.one; // HUDを表示
+
+        // HUDの位置をプレイヤーの頭の位置に合わせる
+        if (Utilities.IsValid(Networking.LocalPlayer))
+        {
+            Vector3 position = Networking.LocalPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).position;
+            Quaternion rotation = Networking.LocalPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).rotation;
+            ClearHUD.SetPositionAndRotation(position, rotation);
+        }
+        
+        SendCustomEventDelayedSeconds("HideHUD", 5.0f); // 5秒後にHUDを非表示にする
+    }
+
+    public void HideHUD()
+    {
+        isHUDActive = false;
+        ClearHUD.localScale = Vector3.zero; // HUDを非表示
     }
 
     public void ResetGame()
     {
         isGameActive = false;
-        timer = 10f;
+        timer = playTime;
         score = 0;
         TimeText.text = $"Time: {timer.ToString()}";
         ScoreText.text = $"Score: {score.ToString()}";

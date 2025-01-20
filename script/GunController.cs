@@ -11,6 +11,7 @@ public class GunController : UdonSharpBehaviour
     [Header("Gun status")]
     [SerializeField] private int maxAmmo = 10; //最大弾数
     [SerializeField] private int currentAmmo; //現在の弾数
+
     
 
     [Header("Gun UI")]
@@ -21,7 +22,20 @@ public class GunController : UdonSharpBehaviour
     [SerializeField] private AudioSource emptyFireSound; // 弾切れ時の音
     [SerializeField] private AudioSource reloadSound; // リロード音
     
-
+    [Header("Debug")]
+    [SerializeField] private bool isDebugMode = false;
+    //デバッグモード
+    
+    private void Update()   //Eキーでリロード
+    {
+        if (isDebugMode == false) { return; }
+        
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Reload();
+        }
+        
+    }
     
 
     private void Start()   

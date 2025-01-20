@@ -1,4 +1,17 @@
-﻿using UdonSharp;
+﻿/*メモ
+[同期について]
+タイミング同期(関数同期) :クライアント全員その関数を実行する．
+SendCustomNetworkEvent(インスタンス全員/ オーナー, 　"実行する関数名")
+引数を持った関数を実行することはできない点に注意. 実行時点でいないクライアントはもちろんその関数を実行しないのでレイトジョインに対応できない．
+
+
+データ同期(変数同期) : オブジェクトのオーナーを基準に各プレーヤーが持つローカル変数を同期する
+[UdonSynced] int Syncvariable おまじない(プロパティ)
+
+RequestSerialization();同期送信
+OnDeserialization();同期受信
+*/
+using UdonSharp;
 using UnityEngine;
 using UnityEngine.UI;
 using VRC.SDKBase;
@@ -35,7 +48,7 @@ public class GridShotManager : UdonSharpBehaviour
         timer = playTime;
         ScoreText.text = $"Score: {score.ToString()}"; //canvasに表示
         TimeText.text = $"Time: {timer.ToString()}";
-        BestScoreText.text = $"BestScore: {bestScore.ToString()}";
+        BestScoreText.text = "BestScore: None";
         ClearHUD.localScale = Vector3.zero;//HUDをスケール0で非表示
 
         //以下デバッグ用
@@ -44,7 +57,7 @@ public class GridShotManager : UdonSharpBehaviour
 
     private void Update()
     {
-
+        //まれにインスタンスにプレイヤーが入って来た時にプレイヤーに関するデータが壊れていることがあるのでエラー回避
         if(!Utilities.IsValid(Networking.LocalPlayer)){return;}
 
         //HUDの位置を常にプレイヤーの頭の位置に合わせる
@@ -59,11 +72,6 @@ public class GridShotManager : UdonSharpBehaviour
 
             if (timer <= 0)
             {
-                if (score > bestScore)
-                {
-                    bestScore = score;
-                    BestScoreText.text = $"BestScore: {bestScore.ToString()}";
-                }   
                 EndGame();
             }
         }
@@ -101,14 +109,23 @@ public class GridShotManager : UdonSharpBehaviour
 
     private void EndGame()
     {
-        isGameActive = false;
-        timer = playTime;
-        erlierScore = score;
+        erlierScore = score; //プレイ結果を保持
+        if(erlierScore > bestScore) //プレイ結果がベストスコアより高かったら
+        {
+            UpdateBestScore(); //ベストスコア更新
+        }
+    
+        //初期化
+        isGameActive = false; 
         score = 0;
+        timer = playTime;
+        //UI更新
         TimeText.text = $"Time: {timer.ToString()}";
         ScoreText.text = $"Score: {score.ToString()}";
-        ClearScoreText.text = $"Score: {erlierScore.ToString()}";
         
+        
+        //----------------HUD表示-------------------------------
+        ClearScoreText.text = $"Score: {erlierScore.ToString()}";
         isHUDActive = true;
         ClearHUD.localScale = Vector3.one; // HUDを表示
 
@@ -121,6 +138,7 @@ public class GridShotManager : UdonSharpBehaviour
         }
         
         SendCustomEventDelayedSeconds("HideHUD", 5.0f); // 5秒後にHUDを非表示にする
+        //-----------------------------------------------
     }
 
     public void HideHUD()
@@ -138,5 +156,13 @@ public class GridShotManager : UdonSharpBehaviour
         ScoreText.text = $"Score: {score.ToString()}";
     }
 
+    public void UpdateBestScore()   //ベストスコアを更新する
+    {
+        bestScore = score;
+        string playerName = Networking.LocalPlayer.displayName;
+        BestScoreText.text = $"BestScore:\n{playerName}: {bestScore.ToString()}";
+    }
+
   
 }
+

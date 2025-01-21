@@ -38,7 +38,8 @@ public class GridShotManager : UdonSharpBehaviour
 
     private int score = 0;
     private int erlierScore = 0;
-    private int bestScore = 0;
+    [UdonSynced] int SyncedBestScore = 0;
+    [UdonSynced] string SyncedBestPlayerName = "";
     private float timer;
     private bool isGameActive = false;
     private bool isHUDActive = false;
@@ -110,7 +111,7 @@ public class GridShotManager : UdonSharpBehaviour
     private void EndGame()
     {
         erlierScore = score; //プレイ結果を保持
-        if(erlierScore > bestScore) //プレイ結果がベストスコアより高かったら
+        if(erlierScore > SyncedBestScore) //プレイ結果がベストスコアより高かったら
         {
             UpdateBestScore(); //ベストスコア更新
         }
@@ -158,9 +159,26 @@ public class GridShotManager : UdonSharpBehaviour
 
     public void UpdateBestScore()   //ベストスコアを更新する
     {
-        bestScore = score;
-        string playerName = Networking.LocalPlayer.displayName;
-        BestScoreText.text = $"BestScore:\n{playerName}: {bestScore.ToString()}";
+        //スコアと名前をデータ同期
+        Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
+        SyncedBestScore = score;
+        SyncedBestPlayerName = Networking.LocalPlayer.displayName;
+        Sync();
+    }
+
+    public void Sync()
+    {
+        RequestSerialization();
+
+        if (Networking.GetOwner(this.gameObject) == Networking.LocalPlayer)
+        {
+            OnDeserialization();
+        }
+    }
+
+    public override void OnDeserialization()
+    {
+        BestScoreText.text = $"BestScore:\n{SyncedBestPlayerName}: {SyncedBestScore.ToString()}";
     }
 
   

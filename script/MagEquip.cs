@@ -20,7 +20,7 @@ public class MagEquip : UdonSharpBehaviour
     void Update()
     {
            
-        if(!IsEquiped) 
+        if(!IsEquiped) //マガジンポーチが装備されていないならリターン
         { 
             return; 
         }
@@ -29,10 +29,29 @@ public class MagEquip : UdonSharpBehaviour
             return; //エラー回避
         }
 
+        DeskTopReload();
+
         //ベルトの位置と向きをプレイヤーのHipsに合わせる
         MagagineBelt.transform.position = Networking.LocalPlayer.GetBonePosition(HumanBodyBones.Hips);
         MagagineBelt.transform.rotation = Networking.LocalPlayer.GetBoneRotation(HumanBodyBones.Hips);
        
+    }
+
+
+
+    [SerializeField] private GunController gunController;
+
+    private void DeskTopReload()
+    {
+        if(!gunController.isPickup){return;} //銃を持っていないならリターン
+
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            if(gunController != null)
+            {
+                gunController.Reload();
+            }
+        }
     }
 }
 

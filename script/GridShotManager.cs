@@ -20,6 +20,9 @@ using System.Collections.Generic;
 
 public class GridShotManager : UdonSharpBehaviour
 {
+    [Header("Game Settings")]
+    [SerializeField] float playTime = 10f;
+
     [Header("Set Target object")]
     public GameObject gridShotTarget;
 
@@ -33,8 +36,9 @@ public class GridShotManager : UdonSharpBehaviour
     [SerializeField] Text BestScoreText;
     [SerializeField] Transform ClearHUD;
 
-    [Header("Game Settings")]
-    [SerializeField] float playTime = 10f;
+    [Header("GameAudio")]
+    [SerializeField] AudioSource HUDSE;
+    
 
     private int score = 0;
     private int erlierScore = 0;
@@ -47,9 +51,9 @@ public class GridShotManager : UdonSharpBehaviour
     private void Start()
     {  
         timer = playTime;
-        ScoreText.text = $"Score: {score.ToString()}"; //canvasに表示
-        TimeText.text = $"Time: {timer.ToString()}";
-        BestScoreText.text = "BestScore: None";
+        ScoreText.text = $"{score.ToString()}"; //canvasに表示
+        TimeText.text = $"{timer.ToString()}";
+        BestScoreText.text = "None";
         ClearHUD.localScale = Vector3.zero;//HUDをスケール0で非表示
 
         //以下デバッグ用
@@ -69,7 +73,7 @@ public class GridShotManager : UdonSharpBehaviour
         if (isGameActive == true)
         {
             timer -= Time.deltaTime;
-            TimeText.text = $"Time: {timer.ToString()}";
+            TimeText.text = $"{timer.ToString()}";
 
             if (timer <= 0)
             {
@@ -82,7 +86,7 @@ public class GridShotManager : UdonSharpBehaviour
     public void AddScore()
     {
         score++;
-        ScoreText.text = $"Score: {score.ToString()}";
+        ScoreText.text = $"{score.ToString()}";
     }
 
     public void StartGame()
@@ -121,13 +125,15 @@ public class GridShotManager : UdonSharpBehaviour
         score = 0;
         timer = playTime;
         //UI更新
-        TimeText.text = $"Time: {timer.ToString()}";
-        ScoreText.text = $"Score: {score.ToString()}";
+        TimeText.text = $"{timer.ToString()}";
+        ScoreText.text = $"{score.ToString()}";
+        
         
         
         //----------------HUD表示-------------------------------
-        ClearScoreText.text = $"Score: {erlierScore.ToString()}";
+        ClearScoreText.text = $"{erlierScore.ToString()}";
         isHUDActive = true;
+        HUDSE.Play();
         ClearHUD.localScale = Vector3.one; // HUDを表示
 
         // HUDの位置をプレイヤーの頭の位置に合わせる
@@ -142,6 +148,7 @@ public class GridShotManager : UdonSharpBehaviour
         //-----------------------------------------------
     }
 
+    
     public void HideHUD()
     {
         isHUDActive = false;
@@ -153,8 +160,8 @@ public class GridShotManager : UdonSharpBehaviour
         isGameActive = false;
         timer = playTime;
         score = 0;
-        TimeText.text = $"Time: {timer.ToString()}";
-        ScoreText.text = $"Score: {score.ToString()}";
+        TimeText.text = $"{timer.ToString()}";
+        ScoreText.text = $"{score.ToString()}";
     }
 
     public void UpdateBestScore()   //ベストスコアを更新する
@@ -178,7 +185,7 @@ public class GridShotManager : UdonSharpBehaviour
 
     public override void OnDeserialization()
     {
-        BestScoreText.text = $"BestScore:\n{SyncedBestPlayerName}: {SyncedBestScore.ToString()}";
+        BestScoreText.text = $"{SyncedBestPlayerName}: {SyncedBestScore.ToString()}";
     }
 
   

@@ -21,27 +21,29 @@ public class GunController : UdonSharpBehaviour
     [SerializeField] private AudioSource fireSound; // 発砲音
     [SerializeField] private AudioSource emptyFireSound; // 弾切れ時の音
     [SerializeField] private AudioSource reloadSound; // リロード音
+    [SerializeField] private AudioSource upgradeSound; // アップグレード音
     
-    [Header("Debug")]
-    [SerializeField] private bool isDebugMode = false;
-    //デバッグモード
+    public bool isPickup = false;  
     
-    private void Update()   //Eキーでリロード
-    {
-        if (isDebugMode == false) { return; }
-        
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            Reload();
-        }
-        
-    }
+    
     
 
     private void Start()   
     {
         particleSystem = GetComponent<ParticleSystem>(); //弾のパーティクルを取得
+        var mainModule = particleSystem.main; 
+        mainModule.startSpeed = 50f;
         UpdateAmmoUI(); //弾数表示を更新
+    }
+    
+    public override void OnPickup()
+    {
+        isPickup = true;
+    }
+
+    public override void OnDrop()
+    {
+        isPickup = false;
     }
 
     public override void OnPickupUseDown()  //オブジェクトを持ってUseする
@@ -91,16 +93,12 @@ public class GunController : UdonSharpBehaviour
         reloadSound.Play(); // リロード音を再生
     }
 
-    //精度がよくないためmagazine側にもスクリプトを用意して銃と衝突時にGunControllerがあればReload()を呼び出すことにする．
-    /*
-    private void OnTriggerEnter(Collider other)
+    public void IncreasedBulletVelocity()
     {
-        // 接触したオブジェクトの名前が"Magazine"であるか確認
-        if (other.gameObject.name == "Magazine")
-        {
-            Reload(); // Reloadメソッドを呼び出す
-            Destroy(other.gameObject); // magazineオブジェクトを削除
-        }
-    }*/
+        upgradeSound.Play(); // アップグレード音を再生
+        var mainModule = particleSystem.main;
+        var currentSpeed = mainModule.startSpeed.constant;
+        mainModule.startSpeed = currentSpeed + 50f;
+    }
 
 }

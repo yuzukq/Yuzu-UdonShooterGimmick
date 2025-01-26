@@ -38,6 +38,9 @@ public class GridShotManager : UdonSharpBehaviour
 
     [Header("GameAudio")]
     [SerializeField] AudioSource HUDSE;
+
+    [Header("Interval")]
+    [SerializeField] GridHit gridHit;
     
 
     private int score = 0;
@@ -121,7 +124,8 @@ public class GridShotManager : UdonSharpBehaviour
         }
     
         //初期化
-        isGameActive = false; 
+        isGameActive = false;
+        gridHit.Interval();
         score = 0;
         timer = playTime;
         //UI更新

@@ -16,14 +16,16 @@ public class GunController : UdonSharpBehaviour
 
     [Header("Gun UI")]
     [SerializeField] private Text ammoText; //現在の弾数表示用
-    
+    [SerializeField] private Image UpGradeGauge;
+
     [Header("Gun Sound")]
     [SerializeField] private AudioSource fireSound; // 発砲音
     [SerializeField] private AudioSource emptyFireSound; // 弾切れ時の音
     [SerializeField] private AudioSource reloadSound; // リロード音
     [SerializeField] private AudioSource upgradeSound; // アップグレード音
     
-    public bool isPickup = false;  
+    public bool isPickup = false; 
+    private int upgradeCount = 0;
     
     
     
@@ -95,6 +97,12 @@ public class GunController : UdonSharpBehaviour
 
     public void IncreasedBulletVelocity()
     {
+        upgradeCount++;
+        
+        float gauge = (float)upgradeCount / 5.0f;
+        UpGradeGauge.fillAmount = gauge;
+
+        if(upgradeCount > 5){return;}
         upgradeSound.Play(); // アップグレード音を再生
         var mainModule = particleSystem.main;
         var currentSpeed = mainModule.startSpeed.constant;

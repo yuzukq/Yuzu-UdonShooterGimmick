@@ -39,5 +39,10 @@ public class GridHit : UdonSharpBehaviour
 
         
     }
+
+    public void Interval()
+    {
+        animator.SetTrigger("Interval");
+    }
     
 }

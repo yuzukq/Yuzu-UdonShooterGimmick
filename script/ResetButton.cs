@@ -3,6 +3,7 @@ using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
 
+[UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
 public class ResetButton : UdonSharpBehaviour
 {
     private GridShotManager gameManage = default; // ゲーム管理のクラス

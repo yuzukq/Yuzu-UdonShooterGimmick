@@ -3,6 +3,7 @@ using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
 
+[UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
 public class MagEquip : UdonSharpBehaviour
 {
     [SerializeField] Transform MagagineBelt;

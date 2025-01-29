@@ -5,6 +5,7 @@ using VRC.SDKBase;
 using VRC.Udon;
 using UnityEngine.UI;
 
+[UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
 public class MagScaleSlider : UdonSharpBehaviour
 {
     [SerializeField] private Slider beltSizeSlider;

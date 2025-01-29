@@ -3,6 +3,7 @@ using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
 
+[UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
 public class LaserSight : UdonSharpBehaviour
 {
     [SerializeField] Transform RaycastTransform; // レーザーの発射位置と方向を決定するTransform

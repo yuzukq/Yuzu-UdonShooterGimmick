@@ -4,6 +4,7 @@ using VRC.SDKBase;
 using VRC.Udon;
 using UnityEngine.UI;
 
+[UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
 public class GunController : UdonSharpBehaviour
 {
     ParticleSystem particleSystem; //弾丸のパーティクル

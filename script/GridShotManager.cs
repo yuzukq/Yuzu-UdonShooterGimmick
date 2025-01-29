@@ -18,6 +18,7 @@ using VRC.SDKBase;
 using VRC.Udon;
 using System.Collections.Generic;
 
+[UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
 public class GridShotManager : UdonSharpBehaviour
 {
     [Header("Game Settings")]

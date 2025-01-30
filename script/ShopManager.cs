@@ -21,20 +21,35 @@ public class ShopManager : UdonSharpBehaviour
 
     [Header("UI中身")]
     [SerializeField] private Image VerocityUpGradeGauge;
+    [SerializeField] private Image LazerUpGradeGauge;
+    [SerializeField] private Text upGradePointsText;
+    [SerializeField] private Text UserNameText;
 
     [Header("サウンド設定")]
     [SerializeField] private AudioSource upgradeSoundSource;
     [SerializeField] private AudioClip upgradeSoundClip;
+    [SerializeField] private AudioClip cantUpgradeSoundClip;
 
     [Header("gunController")]
     [SerializeField] private GunController gunController;
     [SerializeField] private Animator lazerAnimator;
 
+    [Header("価格設定")]
+    [SerializeField] private int verocityUpgradePrice = 5;
+    [SerializeField] private int lazerUpgradePrice = 10;
+
     //--------------------------------
-    private int VerocityUpgradeCount = 0;
+    private int verocityUpgradeCount = 0;
+    public int upGradePoints = 0;
     private bool isLazerUpGrade = false;
 
     //--------------------------------
+
+    private void Start()
+    {
+        UpdateCurrentPoints();
+        UserNameText.text = $"{Networking.LocalPlayer.displayName}";
+    }
 
     private void Update()
     {
@@ -55,9 +70,21 @@ public class ShopManager : UdonSharpBehaviour
 
     public void VerocityUpGrade()
     {
-        if(VerocityUpgradeCount > 5){return;}
-        VerocityUpgradeCount++;
-        VerocityUpGradeGauge.fillAmount = (float)VerocityUpgradeCount / 5.0f;
+        if(verocityUpgradeCount > 5)//5回までしかアップグレードできない
+        {
+            upgradeSoundSource.PlayOneShot(cantUpgradeSoundClip);
+            return;
+        } 
+        if(upGradePoints < verocityUpgradePrice)//ポイントが足りない
+        {
+            upgradeSoundSource.PlayOneShot(cantUpgradeSoundClip);
+            return;
+        } 
+
+        upGradePoints -= verocityUpgradePrice; //ポイント減少
+        UpdateCurrentPoints();
+        verocityUpgradeCount++;
+        VerocityUpGradeGauge.fillAmount = (float)verocityUpgradeCount / 5.0f;//ゲージに反映
 
         upgradeSoundSource.PlayOneShot(upgradeSoundClip);
         gunController.IncreasedBulletVelocity();
@@ -65,11 +92,27 @@ public class ShopManager : UdonSharpBehaviour
 
     public void LazerUpGrade()
     {
-        if(isLazerUpGrade){return;}
+        if(isLazerUpGrade)//すでにアップグレード済み
+        {
+            upgradeSoundSource.PlayOneShot(cantUpgradeSoundClip);
+            return;
+        } 
+        if(upGradePoints < lazerUpgradePrice)//ポイントが足りない
+        {
+            upgradeSoundSource.PlayOneShot(cantUpgradeSoundClip);
+            return;
+        } 
+
+        upGradePoints -= lazerUpgradePrice; //ポイント減少
+        UpdateCurrentPoints();
         isLazerUpGrade = true;
         lazerAnimator.SetTrigger("UpGrade2");
         upgradeSoundSource.PlayOneShot(upgradeSoundClip);
     }
-    
+
+    public void UpdateCurrentPoints()
+    {
+        upGradePointsText.text = $"{upGradePoints.ToString()}pt";
+    }
 }
 

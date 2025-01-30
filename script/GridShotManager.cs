@@ -21,36 +21,49 @@ using System.Collections.Generic;
 [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
 public class GridShotManager : UdonSharpBehaviour
 {
-    [Header("Game Settings")]
+    //--------------------------------
+    [Header("ゲーム設定")]
     [SerializeField] float playTime = 10f;
+    [SerializeField] int scorePerHit = 100;
+    [SerializeField] int pointRate = 100;
 
-    [Header("Set Target object")]
+    [Header("ターゲットオブジェクト")]
     public GameObject gridShotTarget;
 
-    [Header("Target spawn places")]
+    [Header("ターゲット生成場所")]
     public Transform[] spawnPlaces;
 
-    [Header("UI Elements")]
+    [Header("ゲームUI設定")]
     [SerializeField] Text ScoreText;
-    [SerializeField] Text ClearScoreText;
     [SerializeField] Text TimeText;
     [SerializeField] Text BestScoreText;
+
+    [Header("オーディオ設定")]
+    [SerializeField] AudioSource GameSESource;
+    [SerializeField] AudioClip HUDSEClip;
+    [SerializeField] AudioClip TimerSEClip;
+    
+    [Header("HUD設定")]
     [SerializeField] Transform ClearHUD;
-
-    [Header("GameAudio")]
-    [SerializeField] AudioSource HUDSE;
-
-    [Header("Interval")]
-    [SerializeField] GridHit gridHit;
+    [SerializeField] Text ClearScoreText;
+    [SerializeField] Text GetPointText;
     
 
-    private int score = 0;
-    private int erlierScore = 0;
+    [Header("ゲームオブジェクト")]
+    [SerializeField] GridHit gridHit;
+    [SerializeField] ShopManager shopManager;
+    
+    //--------------------------------
+    
     [UdonSynced] int SyncedBestScore = 0;
     [UdonSynced] string SyncedBestPlayerName = "";
     private float timer;
     private bool isGameActive = false;
     private bool isHUDActive = false;
+    private int score = 0;
+    private int erlierScore = 0;
+
+    //--------------------------------
 
     private void Start()
     {  
@@ -78,8 +91,12 @@ public class GridShotManager : UdonSharpBehaviour
         {
             timer -= Time.deltaTime;
             TimeText.text = $"{timer.ToString()}";
-
-            if (timer <= 0)
+            
+            if(timer == 3.0f || timer == 2.0f || timer == 1.0f)
+            {
+                GameSESource.PlayOneShot(TimerSEClip);
+            }
+            else if (timer <= 0)
             {
                 EndGame();
             }
@@ -89,7 +106,7 @@ public class GridShotManager : UdonSharpBehaviour
 
     public void AddScore()
     {
-        score++;
+        score += scorePerHit;
         ScoreText.text = $"{score.ToString()}";
     }
 
@@ -123,6 +140,10 @@ public class GridShotManager : UdonSharpBehaviour
         {
             UpdateBestScore(); //ベストスコア更新
         }
+
+        //スコアに応じてショップマネージャーにポイント付与
+        shopManager.upGradePoints += erlierScore / pointRate;
+        shopManager.UpdateCurrentPoints();
     
         //初期化
         isGameActive = false;
@@ -137,8 +158,9 @@ public class GridShotManager : UdonSharpBehaviour
         
         //----------------HUD表示-------------------------------
         ClearScoreText.text = $"{erlierScore.ToString()}";
+        GetPointText.text = $"{shopManager.upGradePoints.ToString()}pt";
         isHUDActive = true;
-        HUDSE.Play();
+        GameSESource.PlayOneShot(HUDSEClip);
         ClearHUD.localScale = Vector3.one; // HUDを表示
 
         // HUDの位置をプレイヤーの頭の位置に合わせる

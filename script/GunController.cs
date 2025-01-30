@@ -17,16 +17,17 @@ public class GunController : UdonSharpBehaviour
 
     [Header("Gun UI")]
     [SerializeField] private Text ammoText; //現在の弾数表示用
-    [SerializeField] private Image UpGradeGauge;
+    //[SerializeField] private Image UpGradeGauge;
 
     [Header("Gun Sound")]
-    [SerializeField] private AudioSource fireSound; // 発砲音
-    [SerializeField] private AudioSource emptyFireSound; // 弾切れ時の音
-    [SerializeField] private AudioSource reloadSound; // リロード音
-    [SerializeField] private AudioSource upgradeSound; // アップグレード音
+    [SerializeField] private AudioSource gunSoundSource;
+    [SerializeField] private AudioClip fireSoundClip;
+    [SerializeField] private AudioClip emptyFireSoundClip;
+    [SerializeField] private AudioClip reloadSoundClip;
+    //[SerializeField] private AudioSource upgradeSound; // アップグレード音
     
     public bool isPickup = false; 
-    private int upgradeCount = 0;
+    //private int upgradeCount = 0;
     
     
     
@@ -57,11 +58,11 @@ public class GunController : UdonSharpBehaviour
             PlayHaptics(); //コントローラを振動させる
             currentAmmo--; // 残弾を減らす
             UpdateAmmoUI(); // 弾数表示を更新
-            fireSound.Play(); // 発砲音を再生
+            gunSoundSource.PlayOneShot(fireSoundClip); // 発砲音を再生
         }
         else
         {
-            emptyFireSound.Play(); // 弾切れ時の音を再生
+            gunSoundSource.PlayOneShot(emptyFireSoundClip); // 弾切れ時の音を再生
         }
     }
 
@@ -93,18 +94,16 @@ public class GunController : UdonSharpBehaviour
         PlayHaptics();
         currentAmmo = maxAmmo;
         UpdateAmmoUI();
-        reloadSound.Play(); // リロード音を再生
+        gunSoundSource.PlayOneShot(reloadSoundClip); // リロード音を再生
     }
 
     public void IncreasedBulletVelocity()
     {
-        upgradeCount++;
-        
-        float gauge = (float)upgradeCount / 5.0f;
-        UpGradeGauge.fillAmount = gauge;
-
-        if(upgradeCount > 5){return;}
-        upgradeSound.Play(); // アップグレード音を再生
+        //upgradeCount++;
+        //float gauge = (float)upgradeCount / 5.0f;
+        //UpGradeGauge.fillAmount = gauge;
+        //if(upgradeCount > 5){return;}
+        //upgradeSound.Play(); // アップグレード音を再生
         var mainModule = particleSystem.main;
         var currentSpeed = mainModule.startSpeed.constant;
         mainModule.startSpeed = currentSpeed + 50f;

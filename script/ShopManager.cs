@@ -1,4 +1,4 @@
-﻿
+﻿﻿
 using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
@@ -12,7 +12,7 @@ public class ShopManager : UdonSharpBehaviour
     [Header("アップグレードUI操作レール")]
     [SerializeField] private Transform handle;
     [SerializeField] private float minX = 0f; //レールの開始位置
-    [SerializeField] private float maxX = 0.5f; //レールの終了位置
+    [SerializeField] private float maxX = 0.001028f; //レールの終了位置
 
     [Header("アップグレードUIのスケール調整")]
     [SerializeField] private Transform scaleUI;
@@ -48,7 +48,7 @@ public class ShopManager : UdonSharpBehaviour
     private void Start()
     {
         UpdateCurrentPoints();
-        UserNameText.text = $"{Networking.LocalPlayer.displayName}";
+        UserNameText.text = $"ID: {Networking.LocalPlayer.displayName}";
     }
 
     private void Update()
@@ -108,11 +108,11 @@ public class ShopManager : UdonSharpBehaviour
         isLazerUpGrade = true;
         lazerAnimator.SetTrigger("UpGrade2");
         upgradeSoundSource.PlayOneShot(upgradeSoundClip);
+        LazerUpGradeGauge.fillAmount = 1.0f;
     }
 
     public void UpdateCurrentPoints()
     {
-        upGradePointsText.text = $"{upGradePoints.ToString()}pt";
+        upGradePointsText.text = $"Point: {upGradePoints.ToString()}pt";
     }
 }
-

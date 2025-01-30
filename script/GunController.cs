@@ -12,6 +12,7 @@ public class GunController : UdonSharpBehaviour
     [Header("Gun status")]
     [SerializeField] private int maxAmmo = 10; //最大弾数
     [SerializeField] private int currentAmmo; //現在の弾数
+    [SerializeField] private Animator GunAnimator;
 
     
 
@@ -28,6 +29,8 @@ public class GunController : UdonSharpBehaviour
     
     public bool isPickup = false; 
     //private int upgradeCount = 0;
+    
+    private int fireFrameCounter = 0; // フレームカウンター
     
     
     
@@ -55,16 +58,20 @@ public class GunController : UdonSharpBehaviour
         if (currentAmmo > 0) // 残弾がある場合
         {
             particleSystem.Play();  // 弾のパーティクルを発射
+            GunAnimator.SetTrigger("Fire");
             PlayHaptics(); //コントローラを振動させる
             currentAmmo--; // 残弾を減らす
             UpdateAmmoUI(); // 弾数表示を更新
             gunSoundSource.PlayOneShot(fireSoundClip); // 発砲音を再生
+            
         }
         else
         {
             gunSoundSource.PlayOneShot(emptyFireSoundClip); // 弾切れ時の音を再生
         }
     }
+
+    
 
     private void UpdateAmmoUI()
     {

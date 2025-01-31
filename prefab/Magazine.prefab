@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6186734298804284053}
   - component: {fileID: 6392065778031294680}
   - component: {fileID: 7511738050148000421}
-  - component: {fileID: 6732943354306834816}
+  - component: {fileID: 9038571787008989602}
   m_Layer: 13
   m_Name: Magazine
   m_TagString: Untagged
@@ -195,8 +195,8 @@ MonoBehaviour:
   currentlyHeldBy: {fileID: 0}
   pickupable: 1
   proximity: 2
---- !u!65 &6732943354306834816
-BoxCollider:
+--- !u!64 &9038571787008989602
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -213,6 +213,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.0102113, y: 0.0109017, z: 0.02}
-  m_Center: {x: -0.00000011920929, y: 0.0009548999, z: 0.000000011175871}
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}

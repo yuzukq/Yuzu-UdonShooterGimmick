@@ -16,8 +16,9 @@ public class MagReload : UdonSharpBehaviour
         if (gunController)
         {
             gunController.Reload();
+            Destroy(this.gameObject);
         }
 
-        Destroy(this.gameObject);
+        
     }
 }

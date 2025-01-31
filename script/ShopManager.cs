@@ -24,12 +24,15 @@ public class ShopManager : UdonSharpBehaviour
     [SerializeField] private Image LazerUpGradeGauge;
     [SerializeField] private Text upGradePointsText;
     [SerializeField] private Text UserNameText;
+    [SerializeField] private Text BulletPriceText;
+    [SerializeField] private Text LazerPriceText;
 
     [Header("サウンド設定")]
     [SerializeField] private AudioSource upgradeSoundSource;
     [SerializeField] private AudioClip upgradeSoundClip;
     [SerializeField] private AudioClip cantUpgradeSoundClip;
-
+    [SerializeField] private AudioClip shopOpenSoundClip;
+ 
     [Header("gunController")]
     [SerializeField] private GunController gunController;
     [SerializeField] private Animator lazerAnimator;
@@ -49,6 +52,8 @@ public class ShopManager : UdonSharpBehaviour
     {
         UpdateCurrentPoints();
         UserNameText.text = $"ID: {Networking.LocalPlayer.displayName}";
+        BulletPriceText.text = $"Use: {verocityUpgradePrice.ToString()}pt";
+        LazerPriceText.text = $"Use: {lazerUpgradePrice.ToString()}pt";
     }
 
     private void Update()

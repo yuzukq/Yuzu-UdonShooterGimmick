@@ -7,12 +7,14 @@ using UnityEngine.UI;
 [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
 public class GunController : UdonSharpBehaviour
 {
-    ParticleSystem particleSystem; //弾丸のパーティクル
+    ParticleSystem bulletParticle; //弾丸のパーティクル
 
     [Header("Gun status")]
     [SerializeField] private int maxAmmo = 10; //最大弾数
     [SerializeField] private int currentAmmo; //現在の弾数
     [SerializeField] private Animator GunAnimator;
+
+    
 
     
 
@@ -30,15 +32,15 @@ public class GunController : UdonSharpBehaviour
     public bool isPickup = false; 
     //private int upgradeCount = 0;
     
-    private int fireFrameCounter = 0; // フレームカウンター
+    
     
     
     
 
     private void Start()   
     {
-        particleSystem = GetComponent<ParticleSystem>(); //弾のパーティクルを取得
-        var mainModule = particleSystem.main; 
+        bulletParticle = GetComponent<ParticleSystem>(); //弾のパーティクルを取得
+        var mainModule = bulletParticle.main; 
         mainModule.startSpeed = 50f;
         UpdateAmmoUI(); //弾数表示を更新
     }
@@ -57,7 +59,7 @@ public class GunController : UdonSharpBehaviour
     {
         if (currentAmmo > 0) // 残弾がある場合
         {
-            particleSystem.Play();  // 弾のパーティクルを発射
+            bulletParticle.Play();  // 弾のパーティクルを発射
             GunAnimator.SetTrigger("Fire");
             PlayHaptics(); //コントローラを振動させる
             currentAmmo--; // 残弾を減らす
@@ -111,7 +113,7 @@ public class GunController : UdonSharpBehaviour
         //UpGradeGauge.fillAmount = gauge;
         //if(upgradeCount > 5){return;}
         //upgradeSound.Play(); // アップグレード音を再生
-        var mainModule = particleSystem.main;
+        var mainModule = bulletParticle.main;
         var currentSpeed = mainModule.startSpeed.constant;
         mainModule.startSpeed = currentSpeed + 50f;
     }

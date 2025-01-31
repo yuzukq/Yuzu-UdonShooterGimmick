@@ -35,7 +35,7 @@ public class Magazine : UdonSharpBehaviour
         InstantiateObject instantiateObject = newObject.GetComponent<InstantiateObject>();
         if (instantiateObject != null) { instantiateObject.SetAsCloned(); }//エラー回避 InstantiateObjectクラスのSetAsCloned()メソッドを呼び出す
         
-
+        Debug.Log("ほげ");
         Destroy(newObject, destroyTime);
     }
     

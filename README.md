@@ -1,4 +1,5 @@
-# VRChat Yuzu-UdonShooter-DemoYuzu-UdonShooter-Demo
+# [VRChat] 
+# Yuzu-UdonShooter-DemoYuzu-UdonShooter-Demo
 
 このリポジトリは、VRChat向けに作成した自作ゲームワールドの一部ソースコードを公開しています。ワールド内のギミックやスクリプトの実装について、アドバイスや改善点のフィードバックをいただけると幸いです。また、VRChatのワールド制作に携わる方々の参考になれば嬉しく思います。
 
